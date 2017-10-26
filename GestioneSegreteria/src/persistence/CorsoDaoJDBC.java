@@ -65,17 +65,33 @@ public class CorsoDaoJDBC implements CorsoDao {
 			if (studenteDao.findByPrimaryKey(studente.getMatricola()) == null){
 				studenteDao.save(studente);
 			}
-			String update = "update studente SET corso_codice = ? WHERE matricola = ?";
-			PreparedStatement statement = connection.prepareStatement(update);
-			statement.setLong(1, corso.getCodice());
-			statement.setString(2, studente.getMatricola());
-			int s=statement.executeUpdate();
+			
+			String iscritto = "select id from iscritto where matricola_studente=? AND corso_codice=?";
+			PreparedStatement statementIscritto = connection.prepareStatement(iscritto);
+			statementIscritto.setString(1, studente.getMatricola());
+			statementIscritto.setLong(2, corso.getCodice());
+			ResultSet result = statementIscritto.executeQuery();
+			if(result.next()){
+				String update = "update studente SET corso_codice = ? WHERE id = ?";
+				PreparedStatement statement = connection.prepareStatement(update);
+				statement.setLong(1, corso.getCodice());
+				statement.setLong(2, result.getLong("id"));
+				statement.executeUpdate();
+			}else{			
+				String iscrivi = "insert into iscritto(id, matricola_studente, corso_codice) values (?,?,?)";
+				PreparedStatement statementIscrivi = connection.prepareStatement(iscrivi);
+				Long id = IdBroker.getId(connection);
+				statementIscrivi.setLong(1, id);
+				statementIscrivi.setString(2, studente.getMatricola());
+				statementIscrivi.setLong(3, corso.getCodice());
+				statementIscrivi.executeUpdate();
+			}
 		}
 	}
 
 	private void removeForeignKeyFromStudente(Corso corso, Connection connection) throws SQLException {
 		for (Studente studente : corso.getStudenti()) {
-			String update = "update studente SET corso_codice = NULL WHERE matricola = ?";
+			String update = "update iscritto SET corso_codice = NULL WHERE matricola_studente = ?";
 			PreparedStatement statement = connection.prepareStatement(update);
 			statement.setString(1, studente.getMatricola());
 			statement.executeUpdate();
@@ -90,10 +106,12 @@ public class CorsoDaoJDBC implements CorsoDao {
 		Corso corso = null;
 		try {
 			PreparedStatement statement;
-			String query = "select c.codice as c_codice, c.nome as c_nome, s.matricola as matricola, s.nome as nome, "
-					+ "s.cognome as cognome, s.data_nascita as data_nascita "
-					+ "from corso c left outer join studente s on c.codice=s.corso_codice "
-					+ "where g.nome = ?";
+			String query = "select c.codice as c_codice, c.nome as c_nome, s.matricola as s_matricola, s.nome as s_nome, "
+					+ "s.cognome as s_cognome, s.data_nascita as s_data_nascita, s.indirizzo_codice as s_indirizzo_codice "
+					+ "from corso c, iscritto i, studente s "
+					+ "where c.codice = ?"
+					+ "			AND i.matricola_studente = s.matricola "
+					+ "			AND i.corso_codice = c.codice";
 			statement = connection.prepareStatement(query);
 			statement.setLong(1, id);
 			ResultSet result = statement.executeQuery();
@@ -105,13 +123,15 @@ public class CorsoDaoJDBC implements CorsoDao {
 					corso.setNome(result.getString("c_nome"));
 					primaRiga = false;
 				}
-				if(result.getString("matricola")!=null){
+				if(result.getString("s_matricola")!=null){
 					Studente studente = new Studente();
-					studente.setMatricola(result.getString("matricola"));
-					studente.setNome(result.getString("nome"));
-					studente.setCognome(result.getString("cognome"));
-					long secs = result.getDate("data_nascita").getTime();
+					studente.setMatricola(result.getString("s_matricola"));
+					studente.setNome(result.getString("s_nome"));
+					studente.setCognome(result.getString("s_cognome"));
+					long secs = result.getDate("s_data_nascita").getTime();
 					studente.setDataNascita(new java.util.Date(secs));
+					IndirizzoDaoJDBC indirizzoDao = new IndirizzoDaoJDBC(dataSource);
+					studente.setIndirizzo(indirizzoDao.findByPrimaryKey(result.getLong("s_indirizzo_codice")));
 					corso.addStudente(studente);
 				}
 			}

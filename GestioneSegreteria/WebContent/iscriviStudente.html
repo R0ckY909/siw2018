@@ -1,0 +1,45 @@
+<html>
+<head lang="it">
+<title>Gestione Segreteria Studenti</title>
+<meta charset="utf-8">
+<LINK rel="stylesheet" href="css/common.css" type="text/css">
+</head>
+<body>
+<header>
+<h1>Iscrivi un nuovo Studente</h1>
+<h2>Compila i seguente form per registrare un nuovo studente</h2>
+</header>
+
+<section class="moduloRegistrazione">
+<form method="get" action="confermaIscrizione.php">
+	<div class="campo"><span class="etichetta">Matricola:</span> <span class="valore"> <input name="matricola" type="text" /> </span></div> 
+	<div class="campo"><span class="etichetta">Nome:</span> <span class="valore"><input name="nome" type="text" /> </span></div> 
+	<div class="campo"><span class="etichetta">Cognome:</span> <span class="valore"><input name="cognome" type="text" /> </span></div> 
+	<div class="campo"><span class="etichetta">Data di Nascita:</span> <span class="valore"><input name="dataNascita" type="date" /> </span></div> 
+	<div class="campo"><span class="etichetta">Password per lo studente:</span> <span class="valore"> <input name="password" type="password" /> </span></div> 
+	<div class="campo"><span class="etichetta">Conferm password:</span> <span class="valore"> <input name="confermaPassword" type="password" /> </span></div> 
+	<div class="campo"><span class="etichetta">Indirizzo:</span>	
+		<span class="valore">	
+			<select name="indirimzo">
+				<optgroup label="Intelligenza Artificiale">
+				<option value="rob">Robotica</option>
+				<option value="logic">Logica Computazionale</option>
+				</optgroup>
+				<optgroup label="Storia">
+				<option value="arch">Archeologia</option>
+				</optgroup>				
+			</select>
+		</span> 
+	</div>		
+	<div class="campo">
+		<input name="validaDati" type="button" value="Valida Dati"/>
+		<input name="resetDati" type="reset" value="Reset Dati"/>
+		<input name="inviaDati" type="submit" value="Invia Dati"/>
+	</div>
+	
+</form>
+</section>
+
+
+</body>
+</html>

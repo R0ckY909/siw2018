@@ -24,5 +24,9 @@ public class Dipartimento {
 		this.nome = nome;
 	}
 	
+	public String toString() {
+		return "Dipartimento[" + this.getCodice() + ", " + this.getNome()+"]"; 		
+	}
+	
 	
 }

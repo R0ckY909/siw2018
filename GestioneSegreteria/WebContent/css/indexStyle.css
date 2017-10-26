@@ -1,0 +1,72 @@
+h1{
+	text-shadow: 3px 1px blue;
+}
+
+/* Ignorato: prevale quello piu' specifico */
+h2{
+	text-decoration: line-through;
+}
+
+/* Prevale questo */
+h1+h2{
+	text-decoration: underline;
+}
+
+
+ul {
+    list-style-type: circle;
+}
+
+ul {
+    list-style-type: square;
+}
+
+ol {
+    list-style-type: upper-roman;
+}
+
+ol {
+    list-style-type: lower-alpha;
+}
+
+.submenu>li {
+    display: inline;
+}
+
+#information{
+	text-align: center;
+}
+
+article {
+	/* position: relative; */
+	position: absolute;
+    left: 30px;
+    
+    width: 45%;
+    border: 3px solid #73AD21;
+    
+    padding-top: 20px;    
+    padding-bottom: 20px;  
+    
+    margin-top: 50px;
+    margin-bottom: 50px;    
+}
+article+article{
+	position: absolute;
+    left: 50%;  
+}
+
+.special .articleHeader{
+	text-shadow: 3px 1px blue;
+}
+
+aside{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+
+
+
+
