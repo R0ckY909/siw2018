@@ -79,19 +79,22 @@ public class IndirizzoDaoJDBC implements IndirizzoDao{
 		Connection connection = this.dataSource.getConnection();
 		List<Indirizzo> indirizzi = new LinkedList<>();
 		try {
-			Indirizzo indirizzo;
+			
 			PreparedStatement statement;
 			String query = "select * from indirizzo";
 			statement = connection.prepareStatement(query);
 			ResultSet result = statement.executeQuery();
+
 			while (result.next()) {
-				indirizzo = new Indirizzo();
+				Indirizzo indirizzo = new Indirizzo();
 				indirizzo.setCodice(result.getLong("codice"));				
 				indirizzo.setNome(result.getString("nome"));
+				indirizzi.add(indirizzo);
 			}
+
 		} catch (SQLException e) {
 			throw new PersistenceException(e.getMessage());
-		}	 finally {
+		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
